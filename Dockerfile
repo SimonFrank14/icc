@@ -50,6 +50,9 @@ RUN echo "max_execution_time = 90" > /usr/local/etc/php/conf.d/execution-time.in
 # Do not expose PHP
 RUN echo "expose_php = Off" > /usr/local/etc/php/conf.d/expose-php.ini
 
+# Set DB version so that symfony does not try to connect to a real DB
+ENV DATABASE_SERVER_VERSION=11.4.4-MariaDB
+
 # Set working directory
 WORKDIR /var/www/html
 
@@ -120,7 +123,7 @@ COPY --from=assets /var/www/html/public/build /var/www/html/public/build
 RUN php bin/console assets:install
 
 # Install nginx configuration
-COPY .docker/nginx.conf /etc/nginx/sites-enabled/default
+COPY .docker/nginx.conf /etc/nginx/sites-available/default
 
 # Install supervisor configuration
 COPY .docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
